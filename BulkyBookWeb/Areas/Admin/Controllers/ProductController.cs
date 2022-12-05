@@ -58,7 +58,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                 return View(productVM);
             }
             else{
-                //update product               
+                //update product
             }
 
             return View(productVM);
