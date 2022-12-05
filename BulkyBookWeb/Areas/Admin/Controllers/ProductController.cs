@@ -50,18 +50,16 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
               
             if (id == null || id==0)
             {
-                //create product
-                //ViewBag.CategoryList=CategoryList;
-                //ViewBag.CoverTypeList=CoverTypeList;
-                //ViewData["CoverTypeList"] = CoverTypeList;
-                
                 return View(productVM);
+                //create product
             }
             else{
+                
+                productVM.Product=_unitOfWork.Product.GetFirstOrDefault(x=>x.Id==id);
+                return View(productVM);
                 //update product
             }
 
-            return View(productVM);
         }
         //POST
         [HttpPost]
@@ -79,6 +77,15 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                     var uploads = Path.Combine(wwwRootPath, @"images\products");
                     var extension = Path.GetExtension(file.FileName); //Rename the file,but I want to keep the same extension
 
+                    if (obj.Product.ImageUrl != null) //Delete image when it exits
+                    {
+                        var oldImagePath = Path.Combine(wwwRootPath, obj.Product.ImageUrl.TrimStart('\\'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+              
                     //And finally, I need to copy the file that was uploaded inside the product folder
                     using (var fileStreams = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
                     {
@@ -87,43 +94,25 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                     }
                     obj.Product.ImageUrl = @"\images\products\" + fileName + extension;
                 }
+                string operation = String.Empty;
+                if (obj.Product.Id == 0)
+                {
+                    _unitOfWork.Product.Add(obj.Product);
+                    operation = "created";
+                }
+                else
+                {
+                    _unitOfWork.Product.Update(obj.Product);
+                    operation = "updated";
+                }
 
-                _unitOfWork.Product.Add(obj.Product);
                 _unitOfWork.Save();
-                TempData["Success"] = "Product "+(obj.Product.Id!=0 ? "updated" : "created")+ " successfully";
+                TempData["Success"] = "Product "+operation+ " successfully";
                 return RedirectToAction(nameof(Index));
             }
-            return View(obj.Product);
+            return View(obj);
         }
 
-        //GET
-        public IActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                TempData["Error"] = "Id Null Error";
-                //return View("Error");
-                return NotFound();
-            }
-            var productFromDb = _unitOfWork.Product.GetFirstOrDefault(x=>x.Id==id);
-            if(productFromDb == null)
-            {
-                TempData["Error"] = "This Cover Type is not found";
-                //return View("Error");
-                return NotFound();
-            }
-            return View(productFromDb);
-        }
-
-        //POST
-        [HttpPost]
-        public IActionResult Delete(Product obj)
-        {
-            _unitOfWork.Product.Remove(obj);
-            _unitOfWork.Save();
-            TempData["Success"] = "Cover Type deleted successfully";
-            return RedirectToAction(nameof(Index));
-        }
         #region API CALLS
         //He we will be calling our API calls first
         [HttpGet]
@@ -132,6 +121,26 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             var productList = _unitOfWork.Product.GetAll(includeProperties:"Category,CoverType");
 
             return Json(new { data = productList });
+        }
+        //POST
+        [HttpDelete]
+        public IActionResult Delete(int? id)
+        {
+            string wwwRootPath = _hostEnvironment.WebRootPath;
+
+            var obj = _unitOfWork.Product.GetFirstOrDefault(x => x.Id == id);
+            if (obj == null)
+            {
+                return Json(new { success = false, message = "Error while deleting" });
+            }
+            var oldImagePath = Path.Combine(wwwRootPath, obj.ImageUrl.TrimStart('\\'));
+            if (System.IO.File.Exists(oldImagePath)){
+                System.IO.File.Delete(oldImagePath);
+            }
+            _unitOfWork.Product.Remove(obj);
+            _unitOfWork.Save();
+            //TempData["Success"] = "Cover Type deleted successfully";
+            return Json(new { success = true, message = "Deleted Successfully" });
         }
         #endregion
     }
