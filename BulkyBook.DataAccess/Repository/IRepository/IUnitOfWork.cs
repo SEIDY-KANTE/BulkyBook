@@ -12,6 +12,7 @@ namespace BulkyBook.DataAccess.Repository.IRepository
         ICategoryRepository Category { get;}
         ICoverTypeRepository CoverType { get; }
         IProductRepository Product { get; }
+        ICompanyRepository Company { get; }
 
         //The global method that we want will also be implemented here, which will
         //be the same method
