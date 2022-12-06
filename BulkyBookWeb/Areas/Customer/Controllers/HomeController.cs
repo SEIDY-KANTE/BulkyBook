@@ -22,7 +22,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
         public IActionResult Index()
         {
             IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category,CoverType");
-
+            
             return View(productList);
         }
 
