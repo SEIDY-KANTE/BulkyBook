@@ -1,5 +1,6 @@
 ﻿using BulkyBook.DataAccess.Repository.IRepository;
 using BulkyBook.Models;
+using BulkyBook.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -26,6 +27,17 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             return View(productList);
         }
 
+        public IActionResult Details(int productId)
+        {
+            //We also need the number of account that user wants for that product in their shopping cart
+            ShoppingCart cartObj = new()
+            {
+                Count=1,
+                Product = _unitOfWork.Product.GetFirstOrDefault(x=>x.Id==productId,includeProperties: "Category,CoverType"),
+            };
+
+            return View(cartObj);
+        }
         public IActionResult Privacy()
         {
             return View();
