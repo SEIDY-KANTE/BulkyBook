@@ -26,7 +26,7 @@ namespace BulkyBook.DataAccess.Repository
             _db = db;
             //Include is used to load the navigation properties that are used inside the product model
 
-            //_db.Products.Include(x => x.Category).Include(x => x.CoverType);
+            //_db.ShoppingCarts.Include(x => x.Product).Include(x => x.CoverType);
             dbSet = _db.Set<T>(); //That is calling our repository
         }
 
@@ -35,10 +35,14 @@ namespace BulkyBook.DataAccess.Repository
             dbSet.Add(entity);
         }
         //includeProp - "Category,CoverType"
-        public IEnumerable<T> GetAll(string? includeProperties = null)
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter, string? includeProperties = null)
         {
             //We will return an inumerable of T like we might want to query our data before we return
             IQueryable<T> query = dbSet;
+            if(filter != null)
+            {
+                query = query.Where(filter);
+            }
             if (includeProperties != null)
             {
                 foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
