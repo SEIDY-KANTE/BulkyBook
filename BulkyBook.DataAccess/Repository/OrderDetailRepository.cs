@@ -1,5 +1,5 @@
 ﻿using BulkyBook.DataAccess.Repository.IRepository;
-using BulkyBook.Models;
+using BulkyBook.Models.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 
 namespace BulkyBook.DataAccess.Repository
 {
-    public class CoverTypeRepository : Repository<CoverType>, ICoverTypeRepository
+    public class OrderDetailRepository : Repository<OrderDetail>, IOrderDetailRepository
     {
         private readonly ApplicationDbContext _db;
-        public CoverTypeRepository(ApplicationDbContext db) : base(db)
+        public OrderDetailRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
         }
-
-        public void Update(CoverType obj)
+        public void Update(OrderDetail obj)
         {
-            _db.CoverTypes.Update(obj);
+            _db.OrderDetails.Update(obj);
         }
     }
+    
 }
