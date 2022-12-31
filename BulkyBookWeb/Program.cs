@@ -3,15 +3,40 @@ using BulkyBook.DataAccess.DbInitilializer;
 using BulkyBook.DataAccess.Repository;
 using BulkyBook.DataAccess.Repository.IRepository;
 using BulkyBook.Utility;
+using BulkyBookWeb.Middlewares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+                .AddViewLocalization();
+
+builder.Services.AddLocalization(options =>
+{
+    options.ResourcesPath = "Resources";
+});
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    options.DefaultRequestCulture = new("en-US");
+
+    CultureInfo[] cultures = new CultureInfo[]
+    {
+        new("en-US"),
+        new("tr-TR")
+    };
+
+    options.SupportedCultures = cultures;
+    options.SupportedUICultures = cultures;
+});
+
+builder.Services.AddScoped<RequestLocalizationCookiesMiddleware>();
+
 builder.Services.AddDbContext<ApplicationDbContext>(options=>options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")
     ));
@@ -61,6 +86,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseRequestLocalization();
+app.UseRequestLocalizationCookies();
 
 app.UseRouting();
 

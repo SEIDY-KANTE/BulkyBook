@@ -1,6 +1,11 @@
-﻿@using Microsoft.AspNetCore.Http
+﻿@using BulkyBookWeb.Languages
+@using Microsoft.AspNetCore.Http
 @using BulkyBook.Utility
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Localization
 @inject IHttpContextAccessor HttpContextAccessor
+
+@inject IHtmlLocalizer<Lang> _viewLocalizer;
 
 <!DOCTYPE html>
 <html lang="en">
@@ -32,26 +37,26 @@
 				<div class="collapse navbar-collapse" id="navbarColor02">
 					<ul class="navbar-nav me-auto">
 						<li class="nav-item">
-							<a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
+							<a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Index">@_viewLocalizer["page.Home"]</a>
 						</li>
 						@if (User.IsInRole(SD.Role_Admin))
 						{
 							<li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Content Managment</a>
+								<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">@_viewLocalizer["page.ContentM"]</a>
 								<div class="dropdown-menu">
-									<a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a>
-									<a class="dropdown-item" asp-area="Admin" asp-controller="CoverType" asp-action="Index">Cover Type</a>
-									<a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">Product</a>
+									<a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">@_viewLocalizer["page.Category"]</a>
+									<a class="dropdown-item" asp-area="Admin" asp-controller="CoverType" asp-action="Index">@_viewLocalizer["page.CoverType"]</a>
+									<a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">@_viewLocalizer["page.Product"]</a>
 									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" asp-area="Admin" asp-controller="Company" asp-action="Index">Company</a>
+									<a class="dropdown-item" asp-area="Admin" asp-controller="Company" asp-action="Index">@_viewLocalizer["page.Company"]</a>
 									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Create User</a>
+									<a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">@_viewLocalizer["page.CreateUser"]</a>
 								</div>
 							</li>
 						}
 						<li class="nav-item">
 							<a class=nav-link asp-area="Admin" asp-controller="Order" asp-action="Index">
-								Manage Order
+								@_viewLocalizer["page.Manage"]
 							</a>
 						</li>
 						

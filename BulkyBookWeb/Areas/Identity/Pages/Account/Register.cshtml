@@ -1,13 +1,18 @@
 ﻿@page
 @using BulkyBook.Utility
 @model RegisterModel
+@using BulkyBookWeb.Languages;
+@using Microsoft.AspNetCore.Mvc.Localization;
+@inject IHtmlLocalizer<Lang> _htmlLocalizer;
 @{
-    ViewData["Title"] = "Register";
+    //ViewData["Title"] = "Register";
+    ViewData["Title"] = _htmlLocalizer["page.Register"];
 }
 
 @if(User.IsInRole(SD.Role_Admin)){
 
-    <h1 class="pt-4">Register - ADMIN PORTAL</h1>
+  @*  <h1 class="pt-4">Register - ADMIN PORTAL</h1>*@
+    <h1 class="pt-4">@_htmlLocalizer["register.PortalMessage"]</h1>
 
 }else{
 
@@ -18,7 +23,8 @@
 <div class="row pt-4">
     <div class="col-md-7">
         <form class="row" id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
+           @* <h2>Create a new account.</h2>*@
+            <h2>@_htmlLocalizer["register.msg1"]</h2>
             <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-floating py-2 col-12">
@@ -81,23 +87,28 @@
                 </div>
 
             }
-            <button id="registerSubmit" type="submit" class="w-100 btn  btn-primary">Register</button>
+            <button id="registerSubmit" type="submit" class="w-100 btn  btn-primary">@_htmlLocalizer["register"]</button>
         </form>
     </div>
     @if(!User.IsInRole(SD.Role_Admin)){
         <div class="col-md-5">
             <section>
-                <h3>Use another service to register.</h3>
+                @*<h3>Use another service to register.</h3>*@
+                <h3>@_htmlLocalizer["register.msg2"]</h3>
                 <hr />
                 @{
                     if ((Model.ExternalLogins?.Count ?? 0) == 0)
                     {
                         <div>
+                            @*
                             <p>
                                 There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
                                     article
                                     about setting up this ASP.NET application to support logging in via external services
                                 </a>.
+                            *@
+                            <p>
+                                @_htmlLocalizer["register.msg3"]
                             </p>
                         </div>
                     }

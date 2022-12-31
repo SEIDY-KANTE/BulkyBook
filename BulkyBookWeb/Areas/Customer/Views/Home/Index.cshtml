@@ -1,4 +1,7 @@
 ﻿@model IEnumerable<BulkyBook.Models.Product>
+@using BulkyBookWeb.Languages;
+@using Microsoft.AspNetCore.Mvc.Localization;
+@inject IHtmlLocalizer<Lang> _htmlLocalizer;
 
 <div class="row pb-3">
 	@foreach(var product in Model){
@@ -20,7 +23,7 @@
 							</div>
 						</div>
 						<div>
-							<a asp-action="Details" class="btn btn-primary form-control" asp-route-productId="@product.Id">Details</a>
+							<a asp-action="Details" class="btn btn-primary form-control" asp-route-productId="@product.Id">@_htmlLocalizer["details"]</a>
 						</div>
 					</div>
 				</div>
